@@ -92,7 +92,7 @@
         <div id="container" class="container" tabindex$=[[tabindex]]>
             <paper-ripple></paper-ripple>
             <div class="video">
-                <video on-tap="_handleTap" muted="{{muted}}" width="{{width}}" poster="{{poster}}" preload="{{preload}}" height="{{height}}" id="paperVideo" src="{{src}}" autoplay="{{autoplay}}" loop="{{loop}}"></video>
+                <video on-tap="_handleTap" muted="{{muted}}" width="{{width}}" poster="{{thumbnail}}" preload="{{preload}}" height="{{height}}" id="paperVideo" src="{{src}}" autoplay="{{autoplay}}" loop="{{loop}}"></video>
             </div>
             <paper-material elevation="1" hidden$="{{!controls}}" id="videoControls">
                 <paper-icon-button id="playPauseIcon" on-tap="toggle" icon="av:play-arrow"></paper-icon-button>
@@ -164,12 +164,12 @@
         },
 
         /**
-         * poster - path or url to the image file that will be displayed as poster
-         * @property poster
+         * thumbnail - path or url to the image file that will be displayed as thumbnail
+         * @property thumbnail
          * @type String
          * @default ""
          */
-        poster: {
+        thumbnail: {
           type: String,
           value: ""
         },
@@ -221,6 +221,29 @@
           type: Number,
           value: 1000
         },
+
+        /**
+         * width - width of the video area in px
+         * @property width
+         * @type Number
+         * @default 320
+         */
+        width: {
+          type: Number,
+          value: 320
+        },
+
+        /**
+         * height - height of the video area in px
+         * @property height
+         * @type Number
+         * @default 240
+         */
+        height: {
+          type: Number,
+          value: 240
+        },
+
         _dblTapDelay: {
           type: Number,
           value: 300
