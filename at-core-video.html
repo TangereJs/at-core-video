@@ -92,7 +92,7 @@
         <div id="container" class="container" tabindex$=[[tabindex]]>
             <paper-ripple></paper-ripple>
             <div class="video">
-                <video on-tap="_handleTap" muted="{{muted}}" width="{{width}}" poster="{{thumbnail}}" preload="{{preload}}" height="{{height}}" id="paperVideo" src="{{src}}" autoplay="{{autoplay}}" loop="{{loop}}"></video>
+                <video on-tap="_handleTap" muted="{{muted}}" poster="{{thumbnail}}" preload="{{preload}}" id="paperVideo" src="{{src}}" autoplay="{{autoplay}}" loop="{{loop}}"></video>
             </div>
             <paper-material elevation="1" hidden$="{{!controls}}" id="videoControls">
                 <paper-icon-button id="playPauseIcon" on-tap="toggle" icon="av:play-arrow"></paper-icon-button>
@@ -226,22 +226,22 @@
          * width - width of the video area in px
          * @property width
          * @type Number
-         * @default 320
+         * @default null
          */
         width: {
           type: Number,
-          value: 320
+          value: null
         },
 
         /**
          * height - height of the video area in px
          * @property height
          * @type Number
-         * @default 240
+         * @default null
          */
         height: {
           type: Number,
-          value: 240
+          value: null
         },
 
         _dblTapDelay: {
@@ -252,6 +252,9 @@
       listeners: {
         'mousemove': '_wakeupControls'
       },
+      observers: [
+        '_updateDimensions(width, height)'
+      ],
       attached: function() {
         const that = this,
           video = that.$.paperVideo;
@@ -393,6 +396,13 @@
             this.toggle();
             delete this._dblTapTimer;
           }.bind(this), this._dblTapDelay);
+        }
+      },
+      _updateDimensions: function(width, height) {
+        var video = this.$.paperVideo;
+        if ([null, ""].indexOf(width) === -1 && [null, ""].indexOf(height) === -1) {
+          video.width = width;
+          video.height = height;
         }
       }
     });
