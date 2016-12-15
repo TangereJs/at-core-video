@@ -244,6 +244,18 @@
           value: null
         },
 
+        /**
+         * currentTime - start time at which video should start in seconds
+         * @property currentTime
+         * @type Number
+         * @default 0
+         */
+        currentTime: {
+          type: Number,
+          value: 0,
+          observer: '_currentTimeChanged'
+        },
+
         _dblTapDelay: {
           type: Number,
           value: 300
@@ -256,7 +268,7 @@
         '_updateDimensions(width, height)'
       ],
       attached: function() {
-        const that = this,
+        var that = this,
           video = that.$.paperVideo;
         var volume;
 
@@ -298,6 +310,32 @@
         video.addEventListener('waiting', that._wakeupControls.bind(that));
         video.addEventListener('error', that._wakeupControls.bind(that));
 
+        /**
+         * support for currentTime property
+         */
+        video.addEventListener('loadedmetadata', function (event) {
+          video.currentTime = that.currentTime;
+        }, false);
+
+        /**
+         * support for _currentTimeChanged
+         * we want to set currentTime only if video is not playing
+         * we attach to playing event, pause and ended
+         * we set __isPlaying to true when playing event is emitted
+         * we set __isPlaying to false when pause or ended event is emitted
+         */
+        video.addEventListener('playing', function(event) {
+          that.__isPlaying = true;
+        });
+
+        video.addEventListener('pause', function(event) {
+          that.__isPlaying = false;
+        });
+
+        video.addEventListener('ended', function(event) {
+          that.__isPlaying = false;
+        });
+
         that.$.durationSlider.addEventListener('change', function(e) {
           video.currentTime = Math.floor(video.duration * e.target.getAttribute('value') / 100);
         });
@@ -328,6 +366,18 @@
           that.toggleFullScreen(that.$.container);
         });
       },
+
+      /**
+       * updates video starting time
+       */
+      _currentTimeChanged: function (newValue, oldValue) {
+        var newTime = parseFloat(newValue);
+        if (isNaN(newTime)) { return; }
+        if (!this.__isPlaying) {
+          this.$.paperVideo.currentTime = newTime;
+        }
+      },
+
       readableDuration: function(seconds) {
         var sec = Math.floor(seconds);
         var min = Math.floor(sec / 60);
@@ -344,7 +394,7 @@
         return this.$.paperVideo.pause();
       },
       toggle: function() {
-        const video = this.$.paperVideo;
+        var video = this.$.paperVideo;
 
         if (video.paused || video.ended) {
           this.play();
@@ -401,7 +451,7 @@
       _updateDimensions: function(width, height) {
         if ([null, ""].indexOf(width) !== -1 || [null, ""].indexOf(height) !== -1) { return; }
         if (isNaN(parseInt(width)) || isNaN(parseInt(height))) { return; }
-        
+
         var video = this.$.paperVideo;
         video.width = width;
         video.height = height;
