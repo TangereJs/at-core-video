@@ -399,11 +399,12 @@
         }
       },
       _updateDimensions: function(width, height) {
+        if ([null, ""].indexOf(width) !== -1 || [null, ""].indexOf(height) !== -1) { return; }
+        if (isNaN(parseInt(width)) || isNaN(parseInt(height))) { return; }
+        
         var video = this.$.paperVideo;
-        if ([null, ""].indexOf(width) === -1 && [null, ""].indexOf(height) === -1) {
-          video.width = width;
-          video.height = height;
-        }
+        video.width = width;
+        video.height = height;
       }
     });
   </script>
