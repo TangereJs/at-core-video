@@ -24,10 +24,14 @@
       position: relative;
       display: inline-block;
       outline: none;
+      width: 100%;
+      height: auto;
       @apply(--at-core-video-container);
     }
 
      :host .video {
+      width: 100%;
+      height: auto;
       @apply(--at-core-video-wrapper);
     }
 
@@ -70,6 +74,8 @@
 
      :host video {
       background-color: black;
+      width: 100%;
+      height: auto;
       @apply(--at-core-video-video);
     }
 
@@ -91,7 +97,7 @@
   <template>
         <div id="container" class="container" tabindex$=[[tabindex]]>
             <paper-ripple></paper-ripple>
-            <div class="video">
+            <div class="video" id="paperVideoContainer">
                 <video on-tap="_handleTap" muted="{{muted}}" poster="{{thumbnail}}" preload="{{preload}}" id="paperVideo" src="{{src}}" autoplay="{{autoplay}}" loop="{{loop}}"></video>
             </div>
             <paper-material elevation="1" hidden$="{{!controls}}" id="videoControls">
@@ -229,8 +235,9 @@
          * @default null
          */
         width: {
-          type: Number,
-          value: null
+          type: String,
+          value: null,
+          observer: '_widthChanged'
         },
 
         /**
@@ -240,8 +247,9 @@
          * @default null
          */
         height: {
-          type: Number,
-          value: null
+          type: String,
+          value: null,
+          observer: '_heightChanged'
         },
 
         /**
@@ -264,9 +272,6 @@
       listeners: {
         'mousemove': '_wakeupControls'
       },
-      observers: [
-        '_updateDimensions(width, height)'
-      ],
       attached: function() {
         var that = this,
           video = that.$.paperVideo;
@@ -416,6 +421,14 @@
           } else if (elem.webkitRequestFullscreen) {
             elem.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
           }
+
+          this.$.container.style.width = "";
+          this.$.container.style.height = "";
+          this.$.paperVideoContainer.style.height = "";
+          this.$.paperVideoContainer.style.height = "";
+          this.$.paperVideo.style.height = "";
+          this.$.paperVideo.style.height = "";
+
         } else {
           if (document.exitFullscreen) {
             document.exitFullscreen();
@@ -426,6 +439,9 @@
           } else if (document.webkitExitFullscreen) {
             document.webkitExitFullscreen();
           }
+
+          this._widthChanged(this.width);
+          this._heightChanged(this.height);
         }
       },
       _wakeupControls: function() {
@@ -448,13 +464,37 @@
           }.bind(this), this._dblTapDelay);
         }
       },
-      _updateDimensions: function(width, height) {
-        if ([null, ""].indexOf(width) !== -1 || [null, ""].indexOf(height) !== -1) { return; }
-        if (isNaN(parseInt(width)) || isNaN(parseInt(height))) { return; }
+
+      _widthChanged: function (newValue, oldValue) {
+        if ([null, ""].indexOf(newValue) !== -1) { return ; }
+
+        var video = this.$.container;
+
+        if (newValue.indexOf('%') > -1 || newValue.indexOf('px') > -1) {
+          video.style.width = newValue;
+          return;
+        }
+
+        var parsedValue = parseInt(newValue);
+        if (!isNaN(parsedValue)) {
+          video.style.width = newValue + 'px';
+        }
+      },
+
+      _heightChanged: function (newValue, oldValue) {
+        if ([null, ""].indexOf(newValue) !== -1) { return ; }
 
         var video = this.$.paperVideo;
-        video.width = width;
-        video.height = height;
+
+        if (newValue.indexOf('%') > -1 || newValue.indexOf('px') > -1) {
+          video.style.height = newValue;
+          return;
+        }
+
+        var parsedValue = parseInt(newValue);
+        if (!isNaN(parsedValue)) {
+          video.style.height = newValue + 'px';
+        }
       }
     });
   </script>
