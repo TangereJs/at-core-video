@@ -3,7 +3,7 @@
   "version": "1.0.0.0",
   "private": true,
   "dependencies": {
-    "tangere": "TangereJs/tangere#0.8-preview",
+    "tangere": "TangereJs/tangere#master",
     "paper-ripple": "PolymerElements/paper-ripple#^1.0.5",
     "paper-material": "PolymerElements/paper-material#^1.0.6",
     "iron-icons": "PolymerElements/iron-icons#^1.1.3",
