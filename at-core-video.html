@@ -7,109 +7,109 @@
 <link rel="import" href="../iron-icons/iron-icons.html">
 <link rel="import" href="../iron-icons/av-icons.html">
 <dom-module id="at-core-video">
-  <style is="custom-style">
-     :host {
-      --at-core-video-controls-background: white;
-      --at-core-video-controls-color: #595959;
-      --at-core-video-slider-color: var(--primary-color);
-      @apply(--at-core-video);
-    }
-
-     :host paper-slider {
-      --paper-slider-active-color: var(--at-core-video-slider-color);
-      --paper-slider-knob-color: var(--at-core-video-slider-color);
-    }
-
-     :host .container {
-      position: relative;
-      display: inline-block;
-      outline: none;
-      width: 100%;
-      height: auto;
-      @apply(--at-core-video-container);
-    }
-
-     :host .video {
-      width: 100%;
-      height: auto;
-      @apply(--at-core-video-wrapper);
-    }
-
-     :host #videoControls {
-      position: absolute;
-      bottom: 4px;
-      left: 0;
-      right: 0;
-      display: flex;
-      color: var(--at-core-video-controls-color);
-      background-color: var(--at-core-video-controls-background);
-      padding: 15px;
-      align-items: center;
-      transition: 0.1s;
-      @apply(--at-core-video-controls);
-    }
-
-     :host paper-ripple {
-      color: var(--at-core-video-ripple-color, var(--at-core-video-controls-color));
-      opacity: 0.4;
-    }
-
-     :host #durationSlider {
-      flex: 1;
-    }
-
-     :host #volumeSlider {
-      max-width: 120px;
-    }
-
-     :host .video-time {
-      @apply(--paper-font-caption);
-    }
-
-     :host #container:-webkit-full-screen,
-     :host #container:-webkit-full-screen video {
-      width: 100vw;
-      height: 100vh;
-    }
-
-     :host video {
-      background-color: black;
-      width: 100%;
-      height: auto;
-      @apply(--at-core-video-video);
-    }
-
-     :host(.controls-hidden) {
-      cursor: none;
-    }
-
-     :host(.controls-hidden:not([controls])) {
-      cursor: default;
-    }
-
-     :host(.controls-hidden) #videoControls {
-      transition: 0.5s;
-      opacity: 0;
-      pointer-events: none;
-      touch-action: none;
-    }
-  </style>
   <template>
-        <div id="container" class="container" tabindex$=[[tabindex]]>
-            <paper-ripple></paper-ripple>
-            <div class="video" id="paperVideoContainer">
-                <video on-tap="_handleTap" muted="{{muted}}" poster="{{thumbnail}}" preload="{{preload}}" id="paperVideo" src="{{src}}" autoplay="{{autoplay}}" loop="{{loop}}"></video>
-            </div>
-            <paper-material elevation="1" hidden$="{{!controls}}" id="videoControls">
-                <paper-icon-button id="playPauseIcon" on-tap="toggle" icon="av:play-arrow"></paper-icon-button>
-                <span class="video-time">{{currentTick}}/{{durationTick}}</span>
-                <paper-slider id="durationSlider" value="{{videoTimeline}}"></paper-slider>
-                <paper-icon-button id="toggleMute" icon="av:volume-up"></paper-icon-button>
-                <paper-slider id="volumeSlider" value="{{videoVolume}}"></paper-slider>
-                <paper-icon-button id="fullScreen" icon="icons:fullscreen"></paper-icon-button>
-            </paper-material>
-        </div>
-    </template>
+    <style>
+       :host {
+        --at-core-video-controls-background: white;
+        --at-core-video-controls-color: #595959;
+        --at-core-video-slider-color: var(--primary-color);
+        @apply(--at-core-video);
+      }
+
+       :host paper-slider {
+        --paper-slider-active-color: var(--at-core-video-slider-color);
+        --paper-slider-knob-color: var(--at-core-video-slider-color);
+      }
+
+       :host .container {
+        position: relative;
+        display: inline-block;
+        outline: none;
+        width: 100%;
+        height: auto;
+        @apply(--at-core-video-container);
+      }
+
+       :host .video {
+        width: 100%;
+        height: auto;
+        @apply(--at-core-video-wrapper);
+      }
+
+       :host #videoControls {
+        position: absolute;
+        bottom: 4px;
+        left: 0;
+        right: 0;
+        display: flex;
+        color: var(--at-core-video-controls-color);
+        background-color: var(--at-core-video-controls-background);
+        padding: 15px;
+        align-items: center;
+        transition: 0.1s;
+        @apply(--at-core-video-controls);
+      }
+
+       :host paper-ripple {
+        color: var(--at-core-video-ripple-color, var(--at-core-video-controls-color));
+        opacity: 0.4;
+      }
+
+       :host #durationSlider {
+        flex: 1;
+      }
+
+       :host #volumeSlider {
+        max-width: 120px;
+      }
+
+       :host .video-time {
+        @apply(--paper-font-caption);
+      }
+
+       :host #container:-webkit-full-screen,
+       :host #container:-webkit-full-screen video {
+        width: 100vw;
+        height: 100vh;
+      }
+
+       :host video {
+        background-color: black;
+        width: 100%;
+        height: auto;
+        @apply(--at-core-video-video);
+      }
+
+       :host(.controls-hidden) {
+        cursor: none;
+      }
+
+       :host(.controls-hidden:not([controls])) {
+        cursor: default;
+      }
+
+       :host(.controls-hidden) #videoControls {
+        transition: 0.5s;
+        opacity: 0;
+        pointer-events: none;
+        touch-action: none;
+      }
+    </style>
+    <div id="container" class="container" tabindex$=[[tabindex]]>
+      <paper-ripple></paper-ripple>
+      <div class="video" id="paperVideoContainer">
+        <video on-tap="_handleTap" muted="{{muted}}" poster="{{thumbnail}}" preload="{{preload}}" id="paperVideo" src="{{src}}" autoplay="{{autoplay}}" loop="{{loop}}"></video>
+      </div>
+      <paper-material elevation="1" hidden$="{{!controls}}" id="videoControls">
+        <paper-icon-button id="playPauseIcon" on-tap="toggle" icon="av:play-arrow"></paper-icon-button>
+        <span class="video-time">{{currentTick}}/{{durationTick}}</span>
+        <paper-slider id="durationSlider" value="{{videoTimeline}}"></paper-slider>
+        <paper-icon-button id="toggleMute" icon="av:volume-up"></paper-icon-button>
+        <paper-slider id="volumeSlider" value="{{videoVolume}}"></paper-slider>
+        <paper-icon-button id="fullScreen" icon="icons:fullscreen"></paper-icon-button>
+      </paper-material>
+    </div>
+  </template>
   <script>
     Polymer({
       is: 'at-core-video',
