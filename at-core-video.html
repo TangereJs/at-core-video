@@ -378,8 +378,13 @@
       _currentTimeChanged: function (newValue, oldValue) {
         var newTime = parseFloat(newValue);
         if (isNaN(newTime)) { return; }
+        
         if (!this.__isPlaying) {
-          this.$.paperVideo.currentTime = newTime;
+          try {
+            // IE11 reports InvalidStateError on line 386. I have no idea which state is invalid or why
+            // try catch block prevents InvalidStateError from breaking dashboard designer
+            this.$.paperVideo.currentTime = newTime;
+          } catch(e) {}
         }
       },
 
